@@ -1,2 +1,2 @@
-CompareReadMappingResult.cpp
+NULL
 ============================
