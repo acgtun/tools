@@ -86,6 +86,8 @@ int main(int argc, const char *argv[]) {
       ptr2->second.Output(fout);
     }
   }
+  
+  fout.close();
 
   return 0;
 }
