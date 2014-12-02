@@ -11,12 +11,13 @@ using namespace std;
 
 struct CMAPPINGResult {
   CMAPPINGResult(string _chrom, string _start_pos, string _end_pos,
-                 string _read_name, char _strand, string _read_seq,
-                 string _read_score) {
+                 string _read_name, int _num_of_mismatches, char _strand,
+                 string _read_seq, string _read_score) {
     chrom = _chrom;
     start_pos = _start_pos;
     end_pos = _end_pos;
     read_name = _read_name;
+    num_of_mismatches = _num_of_mismatches;
     strand = _strand;
     read_seq = _read_seq;
     read_score = _read_score;
@@ -25,18 +26,21 @@ struct CMAPPINGResult {
                               const CMAPPINGResult& r2) {
     return r1.chrom == r2.chrom && r1.start_pos == r2.start_pos
         && r1.end_pos == r2.end_pos && r1.read_name == r2.read_name
+        && r1.num_of_mismatches == r2.num_of_mismatches
         && r1.strand == r2.strand && r1.read_seq == r2.read_seq
         && r1.read_score == r2.read_score;
   }
 
   void Output(ofstream& fout) {
     fout << chrom << "\t" << start_pos << "\t" << end_pos << "\t" << read_name
-         << "\t" << strand << "\t" << read_seq << "\t" << read_score;
+         << "\t" << num_of_mismatches << "\t" << strand << "\t" << read_seq
+         << "\t" << read_score << endl;
   }
   string chrom;
   string start_pos;
   string end_pos;
   string read_name;
+  int num_of_mismatches;
   char strand;
   string read_seq;
   string read_score;
@@ -49,6 +53,7 @@ void ReadResult(const string& file_name, set<string>& reads,
   string start_pos;
   string end_pos;
   string read_name;
+  int num_of_mismatches;
   char strand;
   string read_seq;
   string read_score;
@@ -56,14 +61,14 @@ void ReadResult(const string& file_name, set<string>& reads,
   ifstream fin(file_name.c_str());
   while (getline(fin, line)) {
     istringstream iss(line);
-    iss >> chrom >> start_pos >> end_pos >> read_name >> strand >> read_seq
-        >> read_score;
+    iss >> chrom >> start_pos >> end_pos >> read_name >> num_of_mismatches
+        >> strand >> read_seq >> read_score;
     reads.insert(read_name);
     res.insert(
         make_pair(
             read_name,
-            CMAPPINGResult(chrom, start_pos, end_pos, read_name, strand,
-                           read_seq, read_score)));
+            CMAPPINGResult(chrom, start_pos, end_pos, read_name,
+                           num_of_mismatches, strand, read_seq, read_score)));
   }
 }
 
@@ -81,12 +86,16 @@ int main(int argc, const char *argv[]) {
     map<string, CMAPPINGResult>::iterator ptr1 = res1.find(*it);
     map<string, CMAPPINGResult>::iterator ptr2 = res2.find(*it);
     if (ptr1 == res1.end() || ptr2 == res2.end()
-        || CheckDifference(ptr1->second, ptr2->second)) {
-      ptr1->second.Output(fout);
-      ptr2->second.Output(fout);
+        || !CheckDifference(ptr1->second, ptr2->second)) {
+      if (ptr1 != res1.end()) {
+        ptr1->second.Output(fout);
+      }
+      if (ptr2 != res2.end()) {
+        ptr2->second.Output(fout);
+      }
+      fout << "------------------------------------------------------" << endl;
     }
   }
-  
   fout.close();
 
   return 0;
