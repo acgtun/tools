@@ -88,9 +88,11 @@ int main(int argc, const char *argv[]) {
     if (ptr1 == res1.end() || ptr2 == res2.end()
         || !CheckDifference(ptr1->second, ptr2->second)) {
       if (ptr1 != res1.end()) {
+        fout << "1@ ";
         ptr1->second.Output(fout);
       }
       if (ptr2 != res2.end()) {
+        fout << "2@ ";
         ptr2->second.Output(fout);
       }
       fout << "------------------------------------------------------" << endl;
