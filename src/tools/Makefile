@@ -2,8 +2,8 @@ ifndef SRC_ROOT
 SRC_ROOT=./../
 endif
 
-ifndef SMITHLAB_CPP
-SMITHLAB_CPP=./../smithlab_cpp
+ifndef ACGTUN_UTIL
+ACGTUN_UTIL=./../acgtun_util
 endif
 
 PROGS = compare-read-mapping-results get_nucleotide_from_chromosome_by_position
@@ -25,16 +25,16 @@ OBJ = $(patsubst %.cpp,%.o,$(SRCDB))
 all:	$(PROGS)
 
 %.o: %.cpp %.hpp
-	$(CXX) $(CFLAGS) -c -o $@ $<  -I$(SMITHLAB_CPP)
+	$(CXX) $(CFLAGS) -c -o $@ $<  -I$(ACGTUN_UTIL)
 
-makedb : $(OBJDB) \
-	$(addprefix $(SMITHLAB_CPP)/, smithlab_os.o smithlab_utils.o OptionParser.o)
+compare-read-mapping-results : $(OBJDB) \
+	$(addprefix $(ACGTUN_UTIL)/, option.o)
 
-bsmapper : $(OBJMAP) \
-	$(addprefix $(SMITHLAB_CPP)/, smithlab_os.o smithlab_utils.o OptionParser.o)
+get_nucleotide_from_chromosome_by_position : $(OBJMAP) \
+	$(addprefix $(ACGTUN_UTIL)/, option.o)
 
 %: %.cpp
-		$(CXX) $(CFLAGS) -o $@ $^ -I$(SMITHLAB_CPP)
+		$(CXX) $(CFLAGS) -o $@ $^ -I$(ACGTUN_UTIL)
 install: all
 	@mkdir -p $(SRC_ROOT)/bin
 	@install -m 755 $(PROGS) $(SRC_ROOT)/bin

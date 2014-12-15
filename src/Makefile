@@ -20,29 +20,29 @@
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-ifndef SMITHLAB_CPP
-SMITHLAB_CPP=$(TOOLS)/src/smithlab_cpp/
+ifndef ACGTUN_UTIL
+ACGTUN_UTIL=$(TOOLS)/src/acgtun_util/
 endif
 
 app_subdirs=tools
 
 all:
 	@for i in $(app_subdirs); do \
-		make -C $${i} SMITHLAB_CPP=$(SMITHLAB_CPP) SRC_ROOT=$(TOOLS) OPT=1; \
+		make -C $${i} ACGTUN_UTIL=$(ACGTUN_UTIL) SRC_ROOT=$(TOOLS) OPT=1; \
 	done;
 
 install:
 	@for i in $(app_subdirs); do \
-		make -C $${i} SMITHLAB_CPP=$(SMITHLAB_CPP) SRC_ROOT=$(TOOLS) OPT=1 install; \
+		make -C $${i} ACGTUN_UTIL=$(ACGTUN_UTIL) SRC_ROOT=$(TOOLS) OPT=1 install; \
 	done;
 
 test:
 	@for i in $(app_subdirs); do \
-		make -C $${i} SMITHLAB_CPP=$(SMITHLAB_CPP) SRC_ROOT=$(TOOLS) test; \
+		make -C $${i} ACGTUN_UTIL=$(ACGTUN_UTIL) SRC_ROOT=$(TOOLS) test; \
 	done;
 
 clean:
 	@make -C smithlab_cpp OPT=1 clean
 	@for i in $(app_subdirs); do \
-		make -C $${i} SMITHLAB_CPP=$(SMITHLAB_CPP) SRC_ROOT=$(TOOLS) clean; \
+		make -C $${i} ACGTUN_UTIL=$(ACGTUN_UTIL) SRC_ROOT=$(TOOLS) clean; \
 	done;
