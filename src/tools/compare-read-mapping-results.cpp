@@ -7,6 +7,8 @@
 #include <iostream>
 #include <algorithm>
 
+#include "option.hpp"
+
 using namespace std;
 
 struct CMAPPINGResult {
@@ -73,14 +75,21 @@ void ReadResult(const string& file_name, set<string>& reads,
 }
 
 int main(int argc, const char *argv[]) {
+  InitProgram(argc, argv);
+
+  string file1, file2, output_file;
+  Option::GetOption("-f1", file1);
+  Option::GetOption("-f2", file2);
+  Option::GetOption("-o", output_file);
+
 
   map<string, CMAPPINGResult> res1, res2;
   set<string> reads;
 
-  ReadResult(argv[1], reads, res1);
-  ReadResult(argv[2], reads, res2);
+  ReadResult(file1, reads, res1);
+  ReadResult(file2, reads, res2);
 
-  ofstream fout("diff.txt");
+  ofstream fout(output_file.c_str());
   for (set<string>::const_iterator it = reads.begin(); it != reads.end();
       ++it) {
     map<string, CMAPPINGResult>::iterator ptr1 = res1.find(*it);
