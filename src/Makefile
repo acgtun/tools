@@ -42,7 +42,7 @@ test:
 	done;
 
 clean:
-	@make -C smithlab_cpp OPT=1 clean
+	@make -C acgtun_util OPT=1 clean
 	@for i in $(app_subdirs); do \
 		make -C $${i} ACGTUN_UTIL=$(ACGTUN_UTIL) SRC_ROOT=$(TOOLS) clean; \
 	done;
