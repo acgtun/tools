@@ -6,7 +6,7 @@ ifndef ACGTUN_UTIL
 ACGTUN_UTIL=./../acgtun_util
 endif
 
-PROGS = compare-read-mapping-results get_nucleotide_from_chromosome_by_position
+PROGS = compare-read-mapping-results get-nucleotide-from-chromosome-by-position
 
 CXX = g++
 CFLAGS = -Wall -O3 -fPIC -fmessage-length=50 -std=c++0x
@@ -18,7 +18,7 @@ CFLAGS += -arch x86_64
 endif
 
 SRC = compare-read-mapping-results.cpp \
-	  get_nucleotide_from_chromosome_by_position.cpp
+	  get-nucleotide-from-chromosome-by-position.cpp
 OBJ = $(patsubst %.cpp,%.o,$(SRCDB))
 
 
@@ -30,7 +30,7 @@ all:	$(PROGS)
 compare-read-mapping-results : $(OBJDB) \
 	$(addprefix $(ACGTUN_UTIL)/, option.o)
 
-get_nucleotide_from_chromosome_by_position : $(OBJMAP) \
+get-nucleotide-from-chromosome-by-position : $(OBJMAP) \
 	$(addprefix $(ACGTUN_UTIL)/, option.o)
 
 %: %.cpp
