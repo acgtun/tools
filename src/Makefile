@@ -21,7 +21,7 @@
 #
 
 ifndef ACGTUN_UTIL
-ACGTUN_UTIL=$(TOOLS)/src/acgtun_util/
+ACGTUN_UTIL=$(TOOLS)/src/acgtun_util
 endif
 
 app_subdirs=tools
