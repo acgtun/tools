@@ -43,10 +43,13 @@ int main(int argc, const char *argv[]) {
 
   string chrom_file;
   uint32_t chrom_pos;
+  uint32_t read_len;
   bool rc = false;
   Option::GetOption("-c", chrom_file);
   Option::GetOption("-p", chrom_pos, 0);
+  Option::GetOption("-l", read_len, 100);
   Option::ChkStrExist("-r", rc);
+
 
   ifstream fin(chrom_file.c_str());
   string line;
@@ -59,6 +62,10 @@ int main(int argc, const char *argv[]) {
     }
   }
 
+  for(uint32_t i = 0;i < chrom_seq.size();++i) {
+    chrom_seq[i] = toupper(chrom_seq[i]);
+  }
+
   if(rc) {
     string chrom_seq_rc;
     for (uint32_t j = 0; j < chrom_seq.size(); ++j) {
@@ -68,17 +75,20 @@ int main(int argc, const char *argv[]) {
     cout << "size of chromosome " << chrom_file << " is " << chrom_seq.size() << endl;
     cout << "reverse strand" << endl;
     cout << "start position: " << chrom_pos << endl;
-    for (uint64_t i = chrom_pos, j = 0; i < chrom_seq_rc.size() && j < 100; ++i, ++j) {
+    uint32_t i, j;
+    uint32_t start = chrom_seq.size() - chrom_pos - read_len;
+    for (i = start, j = 0; j < 90; ++i, ++j) {
       cout << chrom_seq_rc[i];
     }
     cout << endl;
   } else {
     cout << "size of chromosome " << chrom_file << " is " << chrom_seq.size() << endl;
     cout << "start position: " << chrom_pos << endl;
-    for (uint64_t i = chrom_pos, j = 0; i < chrom_seq.size() && j < 100; ++i, ++j) {
+    for (uint32_t i = chrom_pos, j = 0; i < chrom_seq.size() && j < read_len; ++i, ++j) {
       cout << chrom_seq[i];
     }
     cout << endl;
   }
-    return 0;
+
+  return 0;
 }
