@@ -104,6 +104,11 @@ int main(int argc, const char *argv[]) {
         fout << "2@ ";
         ptr2->second.Output(fout);
       }
+      if(ptr1->second.num_of_mismatches <= 2 || ptr2->second.num_of_mismatches <= 2) {
+        printf("someting error~@!@@@\n");
+        if(ptr1 != res1.end()) cout << ptr1->second.read_name << endl;
+        if(ptr2 != res2.end()) cout << ptr2->second.read_name << endl;
+      } 
       fout << "------------------------------------------------------" << endl;
     }
   }
