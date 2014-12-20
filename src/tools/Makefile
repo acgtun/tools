@@ -7,7 +7,8 @@ ACGTUN_UTIL=./../acgtun_util
 endif
 
 PROGS = compare-read-mapping-results \
-	get-nucleotide-from-chromosome-by-positoin
+	get-nucleotide-from-chromosome-by-positoin \
+	get-time-memory-from-qsub-output-file
 
 CXX = g++
 CFLAGS = -Wall -O3 -fPIC -fmessage-length=50 -std=c++0x
@@ -27,6 +28,9 @@ compare-read-mapping-results :  \
 	$(addprefix $(ACGTUN_UTIL)/, option.o)
 
 get-nucleotide-from-chromosome-by-positoin : \
+	$(addprefix $(ACGTUN_UTIL)/, option.o)
+
+get-time-memory-from-qsub-output-file : \
 	$(addprefix $(ACGTUN_UTIL)/, option.o)
 
 %: %.cpp
