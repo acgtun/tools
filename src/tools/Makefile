@@ -5,6 +5,9 @@ endif
 ifndef ACGTUN_UTIL
 ACGTUN_UTIL=./../acgtun_util
 endif
+ifndef SMITHLAB_CPP
+SMITHLAB_CPP=./../smithlab_cpp
+endif
 
 PROGS = compare-read-mapping-results \
 	get-nucleotide-from-chromosome-by-positoin \
@@ -22,19 +25,22 @@ endif
 all:	$(PROGS)
 
 %.o: %.cpp %.hpp
-	$(CXX) $(CFLAGS) -c -o $@ $<  -I$(ACGTUN_UTIL)
+	$(CXX) $(CFLAGS) -c -o $@ $<  -I$(ACGTUN_UTIL) -I$(SMITHLAB_CPP)
 
 compare-read-mapping-results :  \
-	$(addprefix $(ACGTUN_UTIL)/, option.o)
+	$(addprefix $(ACGTUN_UTIL)/, option.o) \
+	$(addprefix $(SMITHLAB_CPP)/, smithlab_os.o smithlab_utils.o)
 
 get-nucleotide-from-chromosome-by-positoin : \
-	$(addprefix $(ACGTUN_UTIL)/, option.o)
+	$(addprefix $(ACGTUN_UTIL)/, option.o) \
+	$(addprefix $(SMITHLAB_CPP)/, smithlab_os.o smithlab_utils.o)
 
 get-time-memory-from-qsub-output-file : \
-	$(addprefix $(ACGTUN_UTIL)/, option.o)
+	$(addprefix $(ACGTUN_UTIL)/, option.o) \
+	$(addprefix $(SMITHLAB_CPP)/, smithlab_os.o smithlab_utils.o)
 
 %: %.cpp
-		$(CXX) $(CFLAGS) -o $@ $^ -I$(ACGTUN_UTIL)
+		$(CXX) $(CFLAGS) -o $@ $^ -I$(ACGTUN_UTIL) -I$(SMITHLAB_CPP)
 install: all
 	@mkdir -p $(SRC_ROOT)/bin
 	@install -m 755 $(PROGS) $(SRC_ROOT)/bin
