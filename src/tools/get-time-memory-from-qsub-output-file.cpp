@@ -8,16 +8,13 @@
 #include <iostream>
 #include <algorithm>
 
-#include "option.hpp"
 #include "smithlab_os.hpp"
 
 using namespace std;
 
 int main(int argc, const char *argv[]) {
-  InitProgram(argc, argv);
   string files;
-  Option::GetOption("-f", files);
-
+  files = argv[1];
   vector<string> file_names;
   if(isdir(files.c_str())) {
     read_dir(files, file_names);
@@ -28,12 +25,22 @@ int main(int argc, const char *argv[]) {
   for (uint32_t i = 0; i < file_names.size(); ++i) {
     ifstream fin(file_names[i].c_str());
     string line;
+    int line_count = 0;
     bool is_pbs_output_file = false;
     while (getline(fin, line)) {
-      if(line.find("Begin PBS Prologue") != string::npos) {
-        is_pbs_output_file = true;
+      line_count++;
+
+      if(line_count == 1)
         continue;
+      if(line_count == 2) {
+        if(line.find("Begin PBS Prologue") != string::npos) {
+          is_pbs_output_file = true;
+          continue;
+        } else {
+          break;
+        }
       }
+
       if (line.find("Resources:") == string::npos)
         continue;
 
@@ -55,6 +62,7 @@ int main(int argc, const char *argv[]) {
           << (double) mem / (1024.00 * 1024.00) << "\t"
           <<  file_names[i] << endl; 
     }
+    fin.close();
   }
   return 0;
 }
