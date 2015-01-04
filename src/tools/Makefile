@@ -11,7 +11,8 @@ endif
 
 PROGS = compare-read-mapping-results \
 	get-nucleotide-from-chromosome-by-positoin \
-	get-time-memory-from-qsub-output-file
+	get-time-memory-from-qsub-output-file \
+	generate-test-data
 
 CXX = g++
 CFLAGS = -Wall -O3 -fPIC -fmessage-length=50 -std=c++0x
@@ -36,6 +37,10 @@ get-nucleotide-from-chromosome-by-positoin : \
 	$(addprefix $(SMITHLAB_CPP)/, smithlab_os.o smithlab_utils.o)
 
 get-time-memory-from-qsub-output-file : \
+	$(addprefix $(ACGTUN_UTIL)/, option.o) \
+	$(addprefix $(SMITHLAB_CPP)/, smithlab_os.o smithlab_utils.o)
+
+generate-test-data : \
 	$(addprefix $(ACGTUN_UTIL)/, option.o) \
 	$(addprefix $(SMITHLAB_CPP)/, smithlab_os.o smithlab_utils.o)
 

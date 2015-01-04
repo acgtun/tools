@@ -12,16 +12,36 @@
 
 using namespace std;
 
+struct QSUB_OUT {
+  QSUB_OUT(const double& _time, const double& _memory, const string& _file)
+      : time(_time),
+        memory(_memory),
+        file(_file) {
+  }
+  static bool QSUB_OUT_CMP(const QSUB_OUT& a, const QSUB_OUT& b) {
+    return a.file < b.file;
+  }
+
+  void Output() {
+    cout << time << "\t" << memory << "\t" << file << endl;
+  }
+
+  double time;
+  double memory;
+  string file;
+};
+
 int main(int argc, const char *argv[]) {
   string files;
   files = argv[1];
   vector<string> file_names;
-  if(isdir(files.c_str())) {
+  if (isdir(files.c_str())) {
     read_dir(files, file_names);
   } else {
     file_names.push_back(files);
   }
 
+  vector<QSUB_OUT> qsub_out;
   for (uint32_t i = 0; i < file_names.size(); ++i) {
     ifstream fin(file_names[i].c_str());
     string line;
@@ -30,10 +50,10 @@ int main(int argc, const char *argv[]) {
     while (getline(fin, line)) {
       line_count++;
 
-      if(line_count == 1)
+      if (line_count == 1)
         continue;
-      if(line_count == 2) {
-        if(line.find("Begin PBS Prologue") != string::npos) {
+      if (line_count == 2) {
+        if (line.find("Begin PBS Prologue") != string::npos) {
           is_pbs_output_file = true;
           continue;
         } else {
@@ -44,25 +64,30 @@ int main(int argc, const char *argv[]) {
       if (line.find("Resources:") == string::npos)
         continue;
 
-      if(is_pbs_output_file == false) 
+      if (is_pbs_output_file == false)
         break;
       uint32_t pos = line.find("cput");
       line = line.substr(pos);
       int hour, min, sec;
       long long mem;
-      sscanf(line.c_str(), "cput=%d:%d:%d,mem=%lld", &hour, &min, &sec,
-             &mem);
+      sscanf(line.c_str(), "cput=%d:%d:%d,mem=%lld", &hour, &min, &sec, &mem);
       uint32_t num_of_seconds = 0;
       num_of_seconds = hour * 3600 + min * 60 + sec;
       uint32_t p = file_names[i].find_last_of('/');
-      if(p != string::npos) {
+      if (p != string::npos) {
         file_names[i] = file_names[i].substr(p + 1);
       }
-      cout << (double) num_of_seconds / 3600.00 << "\t" 
-          << (double) mem / (1024.00 * 1024.00) << "\t"
-          <<  file_names[i] << endl; 
+      qsub_out.push_back(
+          QSUB_OUT((double) num_of_seconds / 3600.00,
+                   (double) mem / (1024.00 * 1024.00), file_names[i]));
     }
     fin.close();
   }
+
+  sort(qsub_out.begin(), qsub_out.end(), QSUB_OUT::QSUB_OUT_CMP);
+  for (uint32_t i = 0; i < qsub_out.size(); ++i) {
+    qsub_out[i].Output();
+  }
+
   return 0;
 }

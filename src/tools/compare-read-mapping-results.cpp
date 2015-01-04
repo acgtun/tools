@@ -8,6 +8,7 @@
 #include <algorithm>
 
 #include "option.hpp"
+#include "smithlab_os.hpp"
 
 using namespace std;
 
@@ -35,8 +36,8 @@ struct CMAPPINGResult {
 
   void Output(ofstream& fout) {
     fout << chrom << "\t" << start_pos << "\t" << end_pos << "\t" << read_name
-         << "\t" << num_of_mismatches << "\t" << strand << "\t" << read_seq
-         << "\t" << read_score << endl;
+        << "\t" << num_of_mismatches << "\t" << strand << "\t" << read_seq
+        << "\t" << read_score << endl;
   }
   string chrom;
   string start_pos;
@@ -74,24 +75,16 @@ void ReadResult(const string& file_name, set<string>& reads,
   }
 }
 
-int main(int argc, const char *argv[]) {
-  InitProgram(argc, argv);
-
-  string file1, file2, output_file;
-  Option::GetOption("-f1", file1);
-  Option::GetOption("-f2", file2);
-  Option::GetOption("-o", output_file);
-
-
-  map<string, CMAPPINGResult> res1, res2;
+void CompareMappingResults(const string& file1, const string& file2,
+                           ofstream& fout) {
   set<string> reads;
-
+  map<string, CMAPPINGResult> res1, res2;
   ReadResult(file1, reads, res1);
   ReadResult(file2, reads, res2);
 
-  ofstream fout(output_file.c_str());
+  uint32_t cnt_diff = 0, cnt_diff012 = 0, cnt_same012 = 0;
   for (set<string>::const_iterator it = reads.begin(); it != reads.end();
-      ++it) {
+       ++it) {
     map<string, CMAPPINGResult>::iterator ptr1 = res1.find(*it);
     map<string, CMAPPINGResult>::iterator ptr2 = res2.find(*it);
     if (ptr1 == res1.end() || ptr2 == res2.end()
@@ -104,13 +97,55 @@ int main(int argc, const char *argv[]) {
         fout << "2@ ";
         ptr2->second.Output(fout);
       }
-      if(ptr1->second.num_of_mismatches <= 2 || ptr2->second.num_of_mismatches <= 2) {
-        printf("someting error~@!@@@\n");
-        if(ptr1 != res1.end()) cout << ptr1->second.read_name << endl;
-        if(ptr2 != res2.end()) cout << ptr2->second.read_name << endl;
-      } 
+      if (ptr1->second.num_of_mismatches <= 2
+          || ptr2->second.num_of_mismatches <= 2) {
+        //printf("someting error~@!@@@\n");
+        cnt_diff012++;
+        /*
+         * if (ptr1 != res1.end())
+         cout << ptr1->second.read_name << endl;
+         if (ptr2 != res2.end())
+         cout << ptr2->second.read_name << endl;
+         */
+      }
+      cnt_diff++;
       fout << "------------------------------------------------------" << endl;
+    } else {
+      if (ptr1->second.num_of_mismatches <= 2) {
+        cnt_same012++;
+      }
     }
+  }
+
+
+  cout << cnt_diff << "\t" << static_cast<double>(cnt_diff) / reads.size() << "\t";
+  cout << cnt_diff012 << "\t" << static_cast<double>(cnt_diff012) / reads.size() << "\t";
+  cout << cnt_same012  + cnt_diff012 << "\t" 
+       << static_cast<double>(cnt_same012 + cnt_diff012) / reads.size() << "\t";
+  cout  << static_cast<double>(cnt_diff) / reads.size() << "\t";
+  cout << reads.size() << "\t";
+  cout << "file2: " << file2 << endl;
+}
+
+int main(int argc, const char *argv[]) {
+  InitProgram(argc, argv);
+
+  string benchmark_file, mapping_file, output_file;
+  Option::GetOption("-g", benchmark_file);
+  Option::GetOption("-f", mapping_file);
+  Option::GetOption("-o", output_file);
+
+  vector<string> file_names;
+  if (isdir(mapping_file.c_str())) {
+    read_dir(mapping_file, "out", file_names);
+  } else {
+    file_names.push_back(mapping_file);
+  }
+
+  ofstream fout(output_file.c_str());
+  cout << "diff\tprecentage\tcnt_diff012\tprecentage\treads has 012 mismatches\tprecentage\tmatched reads\tfile" << endl;
+  for (uint32_t i = 0; i < file_names.size(); ++i) {
+    CompareMappingResults(benchmark_file, file_names[i], fout);
   }
   fout.close();
 
