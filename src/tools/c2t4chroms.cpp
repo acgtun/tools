@@ -13,30 +13,6 @@
 
 using namespace std;
 
-/* get the compliment strand nucleotide */
-inline char complimentBase(const char& nt) {
-  switch (nt) {
-    case 'a':
-      return ('t');
-    case 'c':
-      return ('g');
-    case 'g':
-      return ('c');
-    case 't':
-      return ('a');
-    case 'A':
-      return ('T');
-    case 'C':
-      return ('G');
-    case 'G':
-      return ('C');
-    case 'T':
-      return ('A');
-    default:
-      return ('N');
-  }
-}
-
 void ReadChromosomes(const string& chrom_file, vector<string>& chrom_names,
                      vector<string>& chrom_seqs) {
   cerr << "[READING CHROMOSOMES] " << endl;
@@ -45,27 +21,33 @@ void ReadChromosomes(const string& chrom_file, vector<string>& chrom_names,
   read_fasta_file(chrom_file.c_str(), chrom_names, chrom_seqs);
 }
 
-void ReverseChromosomes(const vector<string>& chrom_names,
-                        const vector<string>& chrom_seqs,
-                        const string& output_file) {
+char C2T(const char& chr) {
+  if (chr == 'C' || chr == 'c')
+    return 'T';
+
+  return chr;
+}
+
+void C2TChromosomes(const vector<string>& chrom_names,
+                    const vector<string>& chrom_seqs, const string& output_file,
+                    const bool& bnewline) {
   ofstream fout(output_file.c_str());
   for (uint32_t i = 0; i < chrom_seqs.size(); ++i) {
     string reverse_string;
     for (uint32_t j = 0; j < chrom_seqs[i].size(); ++j) {
-      if (j % 50 == 0 && j != 0) {
+      if (j % 50 == 0 && j != 0 && bnewline) {
         reverse_string += '\n';
       }
-      reverse_string += complimentBase(
-          chrom_seqs[i][chrom_seqs[i].size() - j - 1]);
+      reverse_string += C2T(chrom_seqs[i][j]);
     }
     fout << ">" << chrom_names[i] << endl;
     cout << chrom_names[i] << endl;
-    if(reverse_string.size() != 0 && 
-       reverse_string[reverse_string.size() - 1] != '\n') {
+    if (reverse_string.size() != 0
+        && reverse_string[reverse_string.size() - 1] != '\n') {
       reverse_string += '\n';
     }
 
-    fout << reverse_string << endl;
+    fout << reverse_string;
   }
 
   fout.close();
@@ -73,16 +55,18 @@ void ReverseChromosomes(const vector<string>& chrom_names,
 
 int main(int argc, const char *argv[]) {
   InitProgram(argc, argv);
+  bool bnewline = false;
   string chrom_file, output_file;
   Option::GetOption("-c", chrom_file);
   Option::GetOption("-o", output_file);
+  Option::ChkStrExist("-newline", bnewline);
 
   vector<string> chrom_names;
   vector<string> chrom_seqs;
 
   ReadChromosomes(chrom_file, chrom_names, chrom_seqs);
 
-  ReverseChromosomes(chrom_names, chrom_seqs, output_file);
+  C2TChromosomes(chrom_names, chrom_seqs, output_file, bnewline);
 
   return 0;
 }
