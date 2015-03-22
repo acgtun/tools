@@ -17,37 +17,8 @@
 
 using namespace std;
 
-struct CMAPPINGResult {
-  CMAPPINGResult(string _chrom, string _start_pos, string _end_pos,
-                 string _read_name, int _num_of_mismatches, char _strand,
-                 string _read_seq, string _read_score) {
-    chrom = _chrom;
-    start_pos = _start_pos;
-    end_pos = _end_pos;
-    read_name = _read_name;
-    num_of_mismatches = _num_of_mismatches;
-    strand = _strand;
-    read_seq = _read_seq;
-    read_score = _read_score;
-  }
-
-  void Output(ofstream& fout) {
-    fout << chrom << "\t" << start_pos << "\t" << end_pos << "\t" << read_name
-         << "\t" << num_of_mismatches << "\t" << strand << "\t" << read_seq
-         << "\t" << read_score << endl;
-  }
-
-  string chrom;
-  string start_pos;
-  string end_pos;
-  string read_name;
-  int num_of_mismatches;
-  char strand;
-  string read_seq;
-  string read_score;
-};
-
-void ReadResult(const string& file_name, map<string, CMAPPINGResult>& res) {
+void MismatchCount(const string& file_name,
+                   map<uint32_t, uint32_t>& mismatch_count) {
   string line;
   string chrom;
   string start_pos;
@@ -63,11 +34,7 @@ void ReadResult(const string& file_name, map<string, CMAPPINGResult>& res) {
     istringstream iss(line);
     iss >> chrom >> start_pos >> end_pos >> read_name >> num_of_mismatches
         >> strand >> read_seq >> read_score;
-    res.insert(
-        make_pair(
-            read_name,
-            CMAPPINGResult(chrom, start_pos, end_pos, read_name,
-                           num_of_mismatches, strand, read_seq, read_score)));
+    mismatch_count[num_of_mismatches]++;
   }
 }
 
@@ -78,14 +45,8 @@ int main(int argc, const char *argv[]) {
   Option::GetOption("-f", mapping_file);
   Option::GetOption("-o", output_file);
 
-  map<string, CMAPPINGResult> res;
-  ReadResult(mapping_file, res);
-
   map<uint32_t, uint32_t> mismatch_count;
-  for (map<string, CMAPPINGResult>::const_iterator it = res.begin();
-      it != res.end(); ++it) {
-    mismatch_count[it->second.num_of_mismatches]++;
-  }
+  MismatchCount(mapping_file, mismatch_count);
 
   ofstream fout(output_file.c_str());
   for (map<uint32_t, uint32_t>::const_iterator it = mismatch_count.begin();
@@ -96,4 +57,3 @@ int main(int argc, const char *argv[]) {
 
   return 0;
 }
-
