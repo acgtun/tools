@@ -25,7 +25,7 @@ ACGTUN_UTIL=$(TOOLS)/src/acgtun_util
 endif
 
 ifndef SMITHLAB_CPP
-SMITHLAB_CPP=$(TOOLS)/src/smithlab_cpp/
+SMITHLAB_CPP=$(TOOLS)/src/smithlab_cpp
 endif
 
 app_subdirs=tools
