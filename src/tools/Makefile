@@ -15,6 +15,7 @@ PROGS = compare-read-mapping-results \
 	trim-reads \
 	get-reverse-chromosomes \
 	c2t4chroms \
+	c2t_reads \
 	get-nucleotide-from-chromosome-by-positoin \
 	get-time-memory-from-qsub-output-file \
 	get-time-memory-from-qsub-error-file \
@@ -54,6 +55,10 @@ get-reverse-chromosomes : \
 	$(addprefix $(SMITHLAB_CPP)/, smithlab_os.o smithlab_utils.o)
 
 c2t4chroms : \
+	$(addprefix $(ACGTUN_UTIL)/, option.o) \
+	$(addprefix $(SMITHLAB_CPP)/, smithlab_os.o smithlab_utils.o)
+
+c2t_reads : \
 	$(addprefix $(ACGTUN_UTIL)/, option.o) \
 	$(addprefix $(SMITHLAB_CPP)/, smithlab_os.o smithlab_utils.o)
 
