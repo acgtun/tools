@@ -11,6 +11,7 @@ endif
 
 PROGS = compare-read-mapping-results \
 	count-mismatch-reads \
+	bireads_test.pbs.gen \
 	to-mr-bsmap \
 	trim-reads \
 	get-reverse-chromosomes \
@@ -41,6 +42,9 @@ compare-read-mapping-results :  \
 	$(addprefix $(SMITHLAB_CPP)/, smithlab_os.o smithlab_utils.o)
 
 count-mismatch-reads : \
+	$(addprefix $(ACGTUN_UTIL)/, option.o)
+
+bireads_test.pbs.gen : \
 	$(addprefix $(ACGTUN_UTIL)/, option.o)
 
 to-mr-bsmap : \
