@@ -9,14 +9,17 @@ ifndef SMITHLAB_CPP
 SMITHLAB_CPP=./../smithlab_cpp
 endif
 
-PROGS = compare-read-mapping-results \
-	count-mismatch-reads \
-	bireads_test.pbs.gen \
+PROGS = accuracy-for-bsmappers \
+	count-mismatch-reads-for-RMAPBS-format \
+	mrsFast-count-positions-on-diff-mismatch \
+	mrsFast-sum-count-positions-on-diff-mismatch \
+	bireads-test.pbs.gen \
+	mrsFast-compress \
 	to-mr-bsmap \
 	trim-reads \
 	get-reverse-chromosomes \
 	c2t4chroms \
-	c2t_reads \
+	c2t-reads \
 	get-nucleotide-from-chromosome-by-positoin \
 	get-time-memory-from-qsub-output-file \
 	get-time-memory-from-qsub-error-file \
@@ -37,14 +40,23 @@ all:	$(PROGS)
 	$(CXX) $(CFLAGS) -c -o $@ $<  -I$(ACGTUN_UTIL) -I$(SMITHLAB_CPP)
 
 
-compare-read-mapping-results :  \
+accuracy-for-bsmappers :  \
 	$(addprefix $(ACGTUN_UTIL)/, option.o) \
 	$(addprefix $(SMITHLAB_CPP)/, smithlab_os.o smithlab_utils.o)
 
-count-mismatch-reads : \
+count-mismatch-reads-for-RMAPBS-format : \
 	$(addprefix $(ACGTUN_UTIL)/, option.o)
 
-bireads_test.pbs.gen : \
+mrsFast-count-positions-on-diff-mismatch : \
+	$(addprefix $(ACGTUN_UTIL)/, option.o)
+
+mrsFast-sum-count-positions-on-diff-mismatch : \
+	$(addprefix $(ACGTUN_UTIL)/, option.o)
+
+bireads-test.pbs.gen : \
+	$(addprefix $(ACGTUN_UTIL)/, option.o)
+
+mrsFast-compress : \
 	$(addprefix $(ACGTUN_UTIL)/, option.o)
 
 to-mr-bsmap : \
@@ -62,7 +74,7 @@ c2t4chroms : \
 	$(addprefix $(ACGTUN_UTIL)/, option.o) \
 	$(addprefix $(SMITHLAB_CPP)/, smithlab_os.o smithlab_utils.o)
 
-c2t_reads : \
+c2t-reads : \
 	$(addprefix $(ACGTUN_UTIL)/, option.o) \
 	$(addprefix $(SMITHLAB_CPP)/, smithlab_os.o smithlab_utils.o)
 
