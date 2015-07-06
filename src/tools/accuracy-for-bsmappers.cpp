@@ -72,7 +72,7 @@ void ReadMRResult(const char* file_name, vector<CMAPPINGResult>& res) {
         >> strand >> read_seq >> read_score;
     sscanf(read_name.c_str(), "SRR1171540.%u", &read);
     if (read > 1000000)
-      continue;
+      break;
     res[read] = CMAPPINGResult(chrom, start_pos, end_pos, read_name,
                                num_of_mismatches, strand, read_seq, read_score);
   }
@@ -214,6 +214,7 @@ void CompareMappingResults(vector<CMAPPINGResult>& res,
 }
 
 int main(int argc, const char *argv[]) {
+  /* input summary of count positions on diff mismatch*/
   vector<vector<uint32_t> > count(1000005, vector<uint32_t>(7, 0));
   FILE * fin = fopen(argv[1], "r");
   char cline[MAX_LINE_LENGTH];
@@ -233,7 +234,6 @@ int main(int argc, const char *argv[]) {
   }
   fclose(fin);
 
-  return 0;
 
   cerr << "read mapping results..." << endl;
   vector<CMAPPINGResult> res(1000005);

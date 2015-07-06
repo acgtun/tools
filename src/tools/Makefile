@@ -10,9 +10,12 @@ SMITHLAB_CPP=./../smithlab_cpp
 endif
 
 PROGS = accuracy-for-bsmappers \
+	accuracy-for-bsmappers-paired \
+	accuracy-get-best-pairs \
 	count-mismatch-reads-for-RMAPBS-format \
 	mrsFast-count-positions-on-diff-mismatch \
 	mrsFast-sum-count-positions-on-diff-mismatch \
+	mrsFast-get-1000-results \
 	bireads-test.pbs.gen \
 	mrsFast-compress \
 	to-mr-bsmap \
@@ -44,6 +47,14 @@ accuracy-for-bsmappers :  \
 	$(addprefix $(ACGTUN_UTIL)/, option.o) \
 	$(addprefix $(SMITHLAB_CPP)/, smithlab_os.o smithlab_utils.o)
 
+accuracy-for-bsmappers-paired :  \
+	$(addprefix $(ACGTUN_UTIL)/, option.o) \
+	$(addprefix $(SMITHLAB_CPP)/, smithlab_os.o smithlab_utils.o)
+
+accuracy-get-best-pairs :  \
+	$(addprefix $(ACGTUN_UTIL)/, option.o) \
+	$(addprefix $(SMITHLAB_CPP)/, smithlab_os.o smithlab_utils.o)
+
 count-mismatch-reads-for-RMAPBS-format : \
 	$(addprefix $(ACGTUN_UTIL)/, option.o)
 
@@ -51,6 +62,9 @@ mrsFast-count-positions-on-diff-mismatch : \
 	$(addprefix $(ACGTUN_UTIL)/, option.o)
 
 mrsFast-sum-count-positions-on-diff-mismatch : \
+	$(addprefix $(ACGTUN_UTIL)/, option.o)
+
+mrsFast-get-1000-results : \
 	$(addprefix $(ACGTUN_UTIL)/, option.o)
 
 bireads-test.pbs.gen : \
