@@ -16,7 +16,7 @@ using namespace std;
 void C2T(const string& org_read, const uint32_t& read_len, string& read) {
   for (uint32_t i = 0; i < read_len; ++i) {
     if ('N' == org_read[i]) {
-      read += 'T';
+      read += 'N';
     } else if ('C' == org_read[i]) {
       read += 'T';
     } else {
@@ -25,12 +25,12 @@ void C2T(const string& org_read, const uint32_t& read_len, string& read) {
   }
 }
 
-void A2G(const string& org_read, const uint32_t& read_len, string& read) {
+void G2A(const string& org_read, const uint32_t& read_len, string& read) {
   for (uint32_t i = 0; i < read_len; ++i) {
     if ('N' == org_read[i]) {
-      read += 'G';
-    } else if ('A' == org_read[i]) {
-      read += 'G';
+      read += 'N';
+    } else if ('G' == org_read[i]) {
+      read += 'A';
     } else {
       read += org_read[i];
     }
@@ -41,7 +41,7 @@ void LoadReadsFromFastqFile(const string& reads_file, const bool& AG_WILDCARD) {
   ifstream fin(reads_file.c_str());
   string output_file = reads_file;
   if (AG_WILDCARD) {
-    output_file += ".A2G.fq";
+    output_file += ".G2A.fq";
   } else {
     output_file += ".C2T.fq";
   }
@@ -54,7 +54,7 @@ void LoadReadsFromFastqFile(const string& reads_file, const bool& AG_WILDCARD) {
       uint32_t read_len = line.size();
       string read;
       if (AG_WILDCARD) {
-        A2G(line, read_len, read);
+        G2A(line, read_len, read);
       } else {
         C2T(line, read_len, read);
       }
