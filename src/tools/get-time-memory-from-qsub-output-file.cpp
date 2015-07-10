@@ -13,8 +13,9 @@
 using namespace std;
 
 struct QSUB_OUT {
-  QSUB_OUT(const double& _time, const double& _memory, const string& _file)
-      : time(_time),
+  QSUB_OUT(const double& _cputime, const double& _walttime, const double& _memory, const string& _file)
+      : cputime(_cputime),
+        walttime(_walttime),
         memory(_memory),
         file(_file) {
   }
@@ -23,10 +24,11 @@ struct QSUB_OUT {
   }
 
   void Output() {
-    cout << time << "\t" << memory << "\t" << file << endl;
+    cout << cputime << "\t" << walttime << "\t" << memory << "\t" << file << endl;
   }
 
-  double time;
+  double cputime;
+  double walttime;
   double memory;
   string file;
 };
@@ -73,12 +75,22 @@ int main(int argc, const char *argv[]) {
       sscanf(line.c_str(), "cput=%d:%d:%d,mem=%lld", &hour, &min, &sec, &mem);
       uint32_t num_of_seconds = 0;
       num_of_seconds = hour * 3600 + min * 60 + sec;
+
+      ////////////////////////////////////
+      uint32_t pwall = line.find("walltime");
+      line = line.substr(pwall);
+      sscanf(line.c_str(), "walltime=%d:%d:%d", &hour, &min, &sec);
+      uint32_t num_of_seconds_wall = 0;
+      num_of_seconds_wall = hour * 3600 + min * 60 + sec;
+      /////////////////////////////////////////////
+
       uint32_t p = file_names[i].find_last_of('/');
       if (p != string::npos) {
         file_names[i] = file_names[i].substr(p + 1);
       }
       qsub_out.push_back(
           QSUB_OUT((double) num_of_seconds / 3600.00,
+                   (double) num_of_seconds_wall / 3600.00,
                    (double) mem / (1024.00 * 1024.00), file_names[i]));
     }
     fin.close();
