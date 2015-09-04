@@ -10,6 +10,8 @@ using namespace std;
 
 const int MAX_LINE_LENGTH = 1000;
 int main(int argc, const char **argv) {
+  // intput 1 .count
+  // intput 2 .count
   FILE * fin = fopen(argv[1], "r");
   vector<vector<uint32_t> > count(1000005, vector<uint32_t>(7, 0));
   char cline[MAX_LINE_LENGTH];
@@ -46,9 +48,14 @@ int main(int argc, const char **argv) {
 
   string file = argv[1];
   file += ".sum.txt";
+  char SRRName[100];
+  cout << "input the SRR name including 'SRR'" << endl;
+  scanf("%s", SRRName);
+  cout << SRRName << endl;
   FILE * fout = fopen(file.c_str(), "w");
   for (uint32_t i = 1; i <= 1000000; ++i) {
-    fprintf(fout, "SRR1171540.%u", i);
+    fprintf(fout, "%s.%u", SRRName, i);
+    cout << SRRName << endl;
     for (uint32_t j = 0; j <= 6; ++j) {
       fprintf(fout, " %u", count[i][j] + count2[i][j]);
     }

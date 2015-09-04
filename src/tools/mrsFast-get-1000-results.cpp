@@ -29,16 +29,27 @@ struct MatchResult {
 void GetCounts(const string& count_file, vector<vector<uint32_t> >& count,
                vector<uint32_t>& threshold) {
   /* input summary of count positions on diff mismatch*/
+  cout << count_file << endl;
   FILE * fin = fopen(count_file.c_str(), "r");
   char cline[MAX_LINE_LENGTH];
   cerr << "read ground truth..." << endl;
+  unsigned int SRRName, line_count = 0;
   unsigned int read, m0, m1, m2, m3, m4, m5, m6;
   while (fgets(cline, MAX_LINE_LENGTH, fin)) {
     cline[strlen(cline) - 1] = 0;
     //cerr << cline << endl;
-    sscanf(cline, "%u: %u %u %u %u %u %u %u", &read, &m0, &m1, &m2, &m3, &m4,
+    //cout << "---------------------------------------" << endl;
+    //cout << cline << endl;
+    sscanf(cline, "SRR%u.%u%u%u%u%u%u%u%u", &SRRName, &read, &m0, &m1, &m2, &m3, &m4,
            &m5, &m6);
-    // cerr << read << m0 << m1 << m2 << m3 << m4 << m5 << m6 << endl;
+    //if(line_count < 10) {
+      //cout << SRRName << endl;
+      //cout << "read:" << read << endl;
+      //cout << cline << endl;
+    //}
+    line_count++;
+    //cerr << read << " " << m0 << " " << m1 << " " << m2 << " " << m3 << " " << m4 << " " << m5 << " " << m6 << endl;
+    //cout << "---------------------------------------" << endl;
     count[read][0] = m0;
     count[read][1] = m1;
     count[read][2] = m2;
@@ -48,6 +59,7 @@ void GetCounts(const string& count_file, vector<vector<uint32_t> >& count,
     count[read][6] = m6;
   }
   fclose(fin);
+  cout << "hehhh" << endl;
   for (uint32_t i = 1; i <= 1000000; ++i) {
     uint32_t sum = 0;
     for (uint32_t j = 0; j <= 6; ++j) {
@@ -70,6 +82,8 @@ void GetCounts(const string& count_file, vector<vector<uint32_t> >& count,
 }
 
 int main(int argc, const char **argv) {
+  // input 1  .count.txt.sum.txt
+  // input 2 .._post_processing.txt.count.txt
   vector<uint32_t> threshold(1000005, 0);
   vector<vector<uint32_t> > count(1000005, vector<uint32_t>(7, 0));
   vector<vector<MatchResult> > match_results(1000005,
@@ -84,10 +98,16 @@ int main(int argc, const char **argv) {
   char strand;
   uint32_t mismatch;
   uint32_t read;
+  unsigned int SRRName, line_count = 0;
   while (fgets(cline, MAX_LINE_LENGTH, fin)) {
     cline[strlen(cline) - 1] = 0;
-    sscanf(cline, "SRR1171540.%u %s %u %c %u", &read, chrom, &pos, &strand,
+    sscanf(cline, "SRR%u.%u %s %u %c %u", &SRRName, &read, chrom, &pos, &strand,
            &mismatch);
+    if(line_count < 10) {
+      cout << SRRName << endl;
+      cout << cline << endl;
+    }
+    line_count++;
     if (mismatch <= threshold[read] && match_results_size[read] < 1000) {
       match_results[read][match_results_size[read]] = MatchResult(chrom, pos,
                                                                   strand,

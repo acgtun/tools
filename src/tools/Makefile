@@ -19,6 +19,7 @@ PROGS = accuracy-for-bsmappers \
 	bireads-test.pbs.gen \
 	mrsFast-compress \
 	to-mr-bsmap \
+	to-cluster-walt \
 	trim-reads \
 	get-reverse-chromosomes \
 	c2t4chroms \
@@ -75,6 +76,10 @@ mrsFast-compress : \
 
 to-mr-bsmap : \
 	$(addprefix $(ACGTUN_UTIL)/, option.o)
+
+to-cluster-walt : \
+	$(addprefix $(ACGTUN_UTIL)/, option.o)
+	$(addprefix $(SMITHLAB_CPP)/, smithlab_os.o smithlab_utils.o)
 
 trim-reads : \
 	$(addprefix $(ACGTUN_UTIL)/, option.o) \

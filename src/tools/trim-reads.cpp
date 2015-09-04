@@ -33,7 +33,7 @@ int main(int argc, const char *argv[]) {
   Option::GetOption("-f", fastq_file);
   Option::GetOption("-o", trim_fastq_file);
   Option::GetOption("-l", after_read_len, 90);
-  Option::GetOption("-n", num_of_reads, 1000000);
+  Option::GetOption("-n", num_of_reads, 10000000);
   
   FILE * fin = fopen(fastq_file.c_str(), "r");
   ofstream fout(trim_fastq_file.c_str());

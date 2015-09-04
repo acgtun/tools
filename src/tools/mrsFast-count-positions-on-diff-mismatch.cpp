@@ -10,10 +10,12 @@ using namespace std;
 
 const int MAX_LINE_LENGTH = 1000;
 int main(int argc, const char **argv) {
+  //intput SRR1532534_1_1000000.fastq.C2T.reverse.out_post_processing.txt
   FILE * fin = fopen(argv[1], "r");
   vector<vector<uint32_t> > count(1000005, vector<uint32_t>(7, 0));
   char cline[MAX_LINE_LENGTH];
   char chrom[1000];
+  unsigned int SRRName;
   unsigned int pos, mismatch, read;
   char strand;
   uint64_t line_count = 0;
@@ -23,8 +25,15 @@ int main(int argc, const char **argv) {
     }
     cline[strlen(cline) - 1] = 0;
     //cout << cline << endl;
-    sscanf(cline, "SRR1171540.%u %s %u %c %u", &read, chrom, &pos,
+    sscanf(cline, "SRR%u.%u %s %u %c %u", &SRRName, &read, chrom, &pos,
            &strand, &mismatch);
+    if(line_count < 10) {
+      cout << SRRName << endl;
+      cout << cline << endl;
+    }
+    line_count++;
+    //cout << "SRR" << SRRName << endl;
+
     //cout << read << " " << mismatch << endl;
     count[read][mismatch]++;
     line_count++;

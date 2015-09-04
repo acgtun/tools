@@ -126,7 +126,7 @@ int main(int argc, const char *argv[]) {
 
   Option::GetOption("-c", genome_file);
   Option::GetOption("-l", read_length, 90);
-  Option::GetOption("-l", max_mismatches, 6);
+  Option::GetOption("-m", max_mismatches, 6);
   Option::GetOption("-L", frag_range, 1000);
 
   map<string, uint32_t> chrom_length;

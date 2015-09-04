@@ -21,16 +21,15 @@ void ReadChromosomes(const string& chrom_file, vector<string>& chrom_names,
   read_fasta_file(chrom_file.c_str(), chrom_names, chrom_seqs);
 }
 
-char C2T(const char& chr, const bool& AGWILDCARD ) {
-  if(AGWILDCARD) {
-	if(chr == 'G' || chr == 'g')
-		return 'A';	
-	return chr;
-  }
-  else {
-	if (chr == 'C' || chr == 'c')
-    		return 'T';
-	return chr;
+char C2T(const char& chr, const bool& AGWILDCARD) {
+  if (AGWILDCARD) {
+    if (chr == 'G' || chr == 'g')
+      return 'A';
+    return chr;
+  } else {
+    if (chr == 'C' || chr == 'c')
+      return 'T';
+    return chr;
   }
 }
 
@@ -79,18 +78,20 @@ string ReverseComplimentString(const string& str) {
 
 void C2TChromosomes(const vector<string>& chrom_names,
                     const vector<string>& chrom_seqs, const string& output_file,
-                    const bool& bnewline, const bool& AGWILDCARD, const bool& reverse_compliment) {
+                    const bool& bnewline, const bool& AGWILDCARD,
+                    const bool& reverse_compliment) {
   ofstream fout(output_file.c_str());
   for (uint32_t i = 0; i < chrom_seqs.size(); ++i) {
     string reverse_string;
     string chrom_string = chrom_seqs[i];
-    if(reverse_compliment) {
-   	chrom_string = ReverseComplimentString(chrom_string);
+    if (reverse_compliment) {
+      chrom_string = ReverseComplimentString(chrom_string);
     }
     for (uint32_t j = 0; j < chrom_string.size(); ++j) {
       if (j % 50 == 0 && j != 0 && bnewline) {
         reverse_string += '\n';
       }
+      //cout << "(" << chrom_string[j] << "," << C2T(chrom_string[j], AGWILDCARD) << ")" << endl;
       reverse_string += C2T(chrom_string[j], AGWILDCARD);
     }
     fout << ">" << chrom_names[i] << endl;
@@ -122,8 +123,12 @@ int main(int argc, const char *argv[]) {
   vector<string> chrom_seqs;
 
   ReadChromosomes(chrom_file, chrom_names, chrom_seqs);
+  //RevChromosomes(chrom_names, chrom_seqs);
 
-  C2TChromosomes(chrom_names, chrom_seqs, output_file, bnewline, AGWILDCARD, reverse_compliment);
+  //return 0;
+
+  C2TChromosomes(chrom_names, chrom_seqs, output_file, bnewline, AGWILDCARD,
+                 reverse_compliment);
 
   return 0;
 }
