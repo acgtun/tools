@@ -78,7 +78,6 @@ to-mr-bsmap : \
 	$(addprefix $(ACGTUN_UTIL)/, option.o)
 
 to-cluster-walt : \
-	$(addprefix $(ACGTUN_UTIL)/, option.o)
 	$(addprefix $(SMITHLAB_CPP)/, smithlab_os.o smithlab_utils.o)
 
 trim-reads : \

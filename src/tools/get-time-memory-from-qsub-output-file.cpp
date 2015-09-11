@@ -45,6 +45,8 @@ int main(int argc, const char *argv[]) {
 
   vector<QSUB_OUT> qsub_out;
   for (uint32_t i = 0; i < file_names.size(); ++i) {
+    if (file_names[i].find_first_of('o') == string::npos)
+      continue;
     ifstream fin(file_names[i].c_str());
     string line;
     int line_count = 0;
