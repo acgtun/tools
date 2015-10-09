@@ -150,6 +150,7 @@ int main(int argc, const char *argv[]) {
   cout << "find good pair..." << endl;
   vector<CMAPPINGResult> best_result(1000005);
   uint32_t num_of_paried = 0;
+  ofstream fout("best_pair_benchmark.txt");
   for (uint32_t r = 1; r <= 1000000; ++r) {
     if (r % 10000 == 0) {
       cout << r << endl;
@@ -194,23 +195,21 @@ int main(int argc, const char *argv[]) {
     if (best_times == 1) {
       num_of_paried++;
       const CMAPPINGResult& r1 = res_1[r][best_pair.first];
+      const CMAPPINGResult& r2 = res_2[r][best_pair.second];
       best_result[r] = CMAPPINGResult(r1.chrom, r1.start_pos, r1.end_pos,
                                       "QNAME", min_num_of_mismatch, r1.strand,
                                       "SEQ", "SCORE");
+
+      fout << r1.chrom << "\t" << r1.start_pos << "\t" << r1.mismatch << "\t"
+           << r2.start_pos << "\t" << r2.mismatch << endl;
     } else {
       best_result[r] = CMAPPINGResult("XXX", 0, 0, "XXX", 100, '#', "XXX",
                                       "XXX");
+      fout << "XXX" << "\t" << 0 << "\t" << 100 << "\t" << 0 << "\t" << 100
+           << endl;
     }
   }
 
-  ofstream fout("SRR1171450_best.txt");
-  for (uint32_t i = 1; i <= 1000000; ++i) {
-    const CMAPPINGResult& r = best_result[i];
-    fout << r.chrom << "\t" << r.start_pos << "\t" << r.end_pos << "\t"
-         << r.read_name << "\t" << r.mismatch << "\t" << r.strand << "\t"
-         << r.read_seq << "\t" << r.read_score << endl;
-
-  }
   fout.close();
 
   return 0;

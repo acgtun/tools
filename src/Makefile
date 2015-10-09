@@ -28,7 +28,7 @@ ifndef SMITHLAB_CPP
 SMITHLAB_CPP=$(TOOLS)/src/smithlab_cpp
 endif
 
-app_subdirs=tools
+app_subdirs=tools accuracy_bisulfite
 
 all:
 	@for i in $(app_subdirs); do \

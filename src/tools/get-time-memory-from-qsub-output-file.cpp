@@ -13,10 +13,12 @@
 using namespace std;
 
 struct QSUB_OUT {
-  QSUB_OUT(const double& _cputime, const double& _walttime, const double& _memory, const string& _file)
+  QSUB_OUT(const double& _cputime, const double& _walttime,
+           const double& _memory, const double& _vmem, const string& _file)
       : cputime(_cputime),
         walttime(_walttime),
         memory(_memory),
+        vmem(_vmem),
         file(_file) {
   }
   static bool QSUB_OUT_CMP(const QSUB_OUT& a, const QSUB_OUT& b) {
@@ -24,12 +26,14 @@ struct QSUB_OUT {
   }
 
   void Output() {
-    cout << cputime << "\t" << walttime << "\t" << memory << "\t" << file << endl;
+    cout << cputime << "\t" << walttime << "\t" << memory << "\t" << vmem
+         << "\t" << file << endl;
   }
 
   double cputime;
   double walttime;
   double memory;
+  double vmem;
   string file;
 };
 
@@ -73,8 +77,9 @@ int main(int argc, const char *argv[]) {
       uint32_t pos = line.find("cput");
       line = line.substr(pos);
       int hour, min, sec;
-      long long mem;
-      sscanf(line.c_str(), "cput=%d:%d:%d,mem=%lld", &hour, &min, &sec, &mem);
+      long long mem, vmem;
+      sscanf(line.c_str(), "cput=%d:%d:%d,mem=%lldkb,vmem=%lld", &hour, &min,
+             &sec, &mem, &vmem);
       uint32_t num_of_seconds = 0;
       num_of_seconds = hour * 3600 + min * 60 + sec;
 
@@ -93,7 +98,8 @@ int main(int argc, const char *argv[]) {
       qsub_out.push_back(
           QSUB_OUT((double) num_of_seconds / 3600.00,
                    (double) num_of_seconds_wall / 3600.00,
-                   (double) mem / (1024.00 * 1024.00), file_names[i]));
+                   (double) mem / (1024.00 * 1024.00),
+                   (double) vmem / (1024.00 * 1024.00), file_names[i]));
     }
     fin.close();
   }
