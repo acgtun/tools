@@ -83,7 +83,7 @@ void GetCounts(const string& count_file, vector<vector<uint32_t> >& count,
 
 int main(int argc, const char **argv) {
   // input 1  .count.txt.sum.txt
-  // input 2 .._post_processing.txt.count.txt
+  // input 2 .._post_processing.txt
   vector<uint32_t> threshold(1000005, 0);
   vector<vector<uint32_t> > count(1000005, vector<uint32_t>(7, 0));
   vector<vector<MatchResult> > match_results(1000005,
@@ -108,6 +108,7 @@ int main(int argc, const char **argv) {
       cout << cline << endl;
     }
     line_count++;
+    if(read > 1000000) continue;
     if (mismatch <= threshold[read] && match_results_size[read] < 1000) {
       match_results[read][match_results_size[read]] = MatchResult(chrom, pos,
                                                                   strand,

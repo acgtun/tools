@@ -9,7 +9,8 @@ ifndef SMITHLAB_CPP
 SMITHLAB_CPP=./../smithlab_cpp
 endif
 
-PROGS = count-mismatch-reads-for-RMAPBS-format \
+PROGS = count-mismatch-for-mapped-reads \
+	count-mismatch-reads-for-RMAPBS-format \
 	bireads-test.pbs.gen \
 	to-mr-bsmap \
 	to-cluster-walt \
@@ -38,6 +39,9 @@ all:	$(PROGS)
 %.o: %.cpp %.hpp
 	$(CXX) $(CFLAGS) -c -o $@ $<  -I$(ACGTUN_UTIL) -I$(SMITHLAB_CPP)
 
+
+count-mismatch-for-mapped-reads : \
+	$(addprefix $(ACGTUN_UTIL)/, option.o)
 
 count-mismatch-reads-for-RMAPBS-format : \
 	$(addprefix $(ACGTUN_UTIL)/, option.o)

@@ -12,7 +12,7 @@ const int MAX_LINE_LENGTH = 1000;
 int main(int argc, const char **argv) {
   //intput SRR1532534_1_1000000.fastq.C2T.reverse.out_post_processing.txt
   FILE * fin = fopen(argv[1], "r");
-  vector<vector<uint32_t> > count(1000005, vector<uint32_t>(7, 0));
+  vector<vector<uint32_t> > count(50000005, vector<uint32_t>(7, 0));
   char cline[MAX_LINE_LENGTH];
   char chrom[1000];
   unsigned int SRRName;

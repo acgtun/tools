@@ -17,6 +17,8 @@ PROGS = accuracy-for-single-end \
 	mrsFast-sum-count-positions-on-diff-mismatch3 \
 	mrsFast-compress1 \
 	mrsFast-get-1000-results4 \
+	count-mismatch-for-mapped-reads-SAM
+
 
 CXX = g++
 CFLAGS = -Wall -O3 -fPIC -fmessage-length=50 -std=c++0x
@@ -32,6 +34,9 @@ all:	$(PROGS)
 %.o: %.cpp %.hpp
 	$(CXX) $(CFLAGS) -c -o $@ $<  -I$(ACGTUN_UTIL) -I$(SMITHLAB_CPP)
 
+count-mismatch-for-mapped-reads-SAM :	\
+	$(addprefix $(ACGTUN_UTIL)/, option.o) \
+	$(addprefix $(SMITHLAB_CPP)/, smithlab_os.o smithlab_utils.o)
 
 accuracy-for-single-end :  \
 	$(addprefix $(ACGTUN_UTIL)/, option.o) \

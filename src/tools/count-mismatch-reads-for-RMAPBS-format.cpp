@@ -18,7 +18,7 @@
 using namespace std;
 
 void MismatchCount(const string& file_name,
-                   map<uint32_t, uint32_t>& mismatch_count) {
+                   map<uint32_t, uint32_t>& mismatch_count, const bool& paired) {
   string line;
   string chrom;
   string start_pos;
@@ -34,26 +34,31 @@ void MismatchCount(const string& file_name,
     istringstream iss(line);
     iss >> chrom >> start_pos >> end_pos >> read_name >> num_of_mismatches
         >> strand >> read_seq >> read_score;
+    if (paired) {
+      if (read_name.substr(0, 4) != "FRAG")
+        continue;
+    }
     mismatch_count[num_of_mismatches]++;
   }
 }
 
 int main(int argc, const char *argv[]) {
   InitProgram(argc, argv);
-
+  bool paired = false;
   string mapping_file, output_file;
-  Option::GetOption("-f", mapping_file);
-  Option::GetOption("-o", output_file);
+  //Option::GetOption("-f", mapping_file);
+  Option::ChkStrExist("-paired", paired);
 
+  mapping_file = argv[1];
+  cout << mapping_file << endl;
   map<uint32_t, uint32_t> mismatch_count;
-  MismatchCount(mapping_file, mismatch_count);
+  MismatchCount(mapping_file, mismatch_count, paired);
 
-  ofstream fout(output_file.c_str());
   for (map<uint32_t, uint32_t>::const_iterator it = mismatch_count.begin();
       it != mismatch_count.end(); ++it) {
-    fout << it->first << " " << it->second << endl;
+    printf("%u\t%u\t%.2lf%%\n", it->first, it->second,
+           100 * (double) it->second / 50000000);
   }
-  fout.close();
 
   return 0;
 }

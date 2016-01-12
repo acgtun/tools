@@ -19,7 +19,10 @@ void CompareMappingResults(vector<CMAPPINGResult>& res,
   int TP = 0, FP = 0, FN = 0, TN = 0;
   int tp[7] = { 0 }, fp[7] = { 0 }, fn[7] = { 0 };
   for (uint32_t i = 1; i <= 1000000; ++i) {
+    cout << "i = " << i << endl;
+    cout << res[i].chrom << " " << res[i].mismatch << endl;
     if (best_result[i].chrom == "XXX" && best_result[i].mismatch == 100) {
+     // cout << "i2 = " << i << endl;
       if (res[i].chrom != "XXX") {
         FP++;
         if (res[i].mismatch > 6) {
@@ -31,6 +34,8 @@ void CompareMappingResults(vector<CMAPPINGResult>& res,
         TN++;
       }
     } else {
+     // cout << "i2 = " << i << endl;
+      //cout << "misamtch = " << best_result[i].mismatch << endl;
       if (best_result[i].chrom == res[i].chrom
           && best_result[i].start_pos + 1 == res[i].start_pos) {
         TP++;
@@ -64,6 +69,7 @@ int main(int argc, const char *argv[]) {
   uint32_t start_pos, mismatch;
   map<int, int> count_on_mismatch;
   while (fgets(cline, MAX_LINE_LENGTH, fin)) {
+    if(read > 1000000) continue;
     cline[strlen(cline) - 1] = 0;
     sscanf(cline, "%s %u %u", rname, &start_pos, &mismatch);
     if (line_count < 1) {
