@@ -13,6 +13,7 @@
 #include "smithlab_os.hpp"
 
 #include "read_sam.h"
+#include "read_brat_bw.h"
 
 using namespace std;
 
@@ -26,6 +27,10 @@ void CompareMappingResultsMR(const vector<CMAPPINGResult>& res,
   int TP = 0, FP = 0, FN = 0, TN = 0;
   int tp[7] = { 0 }, fp[7] = { 0 }, fn[7] = { 0 };
   for (int i = 1; i <= 1000000; ++i) {
+    cout << res[i].start_pos << " " << res[i].start_pos2 << " , "
+        << best_results[i].start_pos << " " << best_results[i].start_pos2
+        << endl;
+
     int paired = 0;
     if (res[i].start_pos != 0 && res[i].start_pos2 != 0) {
       paired = 1;
@@ -48,16 +53,16 @@ void CompareMappingResultsMR(const vector<CMAPPINGResult>& res,
     } else {
       num_of_mismatches = best_results[i].mismatch + best_results[i].mismatch2;
       /*if ((res[i].start_pos > best_results[i].start_pos
-          && res[i].start_pos - best_results[i].start_pos < 5)
-          || (res[i].start_pos < best_results[i].start_pos
-              && best_results[i].start_pos - res[i].start_pos < 100005)) {
-        cout << "best " << res[i].start_pos << " " << best_results[i].start_pos
-            << " " << res[i].start_pos2 << " " << best_results[i].start_pos2
-            << endl;
-      }*/
+       && res[i].start_pos - best_results[i].start_pos < 5)
+       || (res[i].start_pos < best_results[i].start_pos
+       && best_results[i].start_pos - res[i].start_pos < 100005)) {
+       cout << "best " << res[i].start_pos << " " << best_results[i].start_pos
+       << " " << res[i].start_pos2 << " " << best_results[i].start_pos2
+       << endl;
+       }*/
       /////////////////////////////////
       if (paired && res[i].start_pos == best_results[i].start_pos + 1
-          && res[i].start_pos2 == best_results[i].start_pos2 + 1
+          /*&& res[i].start_pos2 == best_results[i].start_pos2 + 1*/
           && res[i].chrom == best_results[i].chrom) {
         TP++;
         tp[num_of_mismatches]++;
@@ -70,6 +75,7 @@ void CompareMappingResultsMR(const vector<CMAPPINGResult>& res,
         }
       }
     }
+    printf("TP: %d TN:%d FP:%d FN:%d\n", TP, TN, FP, sum_paired - TP);
   }
 
   printf("TP: %d TN:%d FP:%d FN:%d\n", TP, TN, FP, sum_paired - TP);
@@ -142,7 +148,16 @@ int main(int argc, const char *argv[]) {
   cerr << "read mapping results..." << endl;
   vector<CMAPPINGResult> res(1000005);
   cerr << argv[3] << endl;
-  Read_SAM_Results(argv[3], res, argv[2]);
+  if (strcmp(argv[2], "bratsw") == 0 || strcmp(argv[2], "-bratsw") == 0) {
+    Read_BRATBWResults_pair(argv[3], res);
+  } else {
+    Read_SAM_Results(argv[3], res, argv[2], true);
+  }
+  for (size_t i = 0; i < 1000005; ++i) {
+    cout << "read: " << i << " (" << res[i].chrom << " " << res[i].start_pos
+        << " " << res[i].mismatch << " " << ", " << res[i].start_pos2 << " "
+        << res[i].mismatch2 << ")" << endl;
+  }
 
   CompareMappingResultsMR(res, best_result, num_of_paried, count_on_mismatch,
                           sum);

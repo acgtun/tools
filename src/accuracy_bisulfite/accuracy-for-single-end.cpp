@@ -1,5 +1,6 @@
 #include <map>
 #include <set>
+#include <string.h>
 #include <limits>
 #include <vector>
 #include <cstring>
@@ -12,6 +13,8 @@
 using namespace std;
 
 #include "read_sam.h"
+#include "read_batmeth.h"
+#include "read_brat_bw.h"
 
 void CompareMappingResults(vector<CMAPPINGResult>& res,
                            vector<CMAPPINGResult>& best_result) {
@@ -19,8 +22,9 @@ void CompareMappingResults(vector<CMAPPINGResult>& res,
   int TP = 0, FP = 0, FN = 0, TN = 0;
   int tp[7] = { 0 }, fp[7] = { 0 }, fn[7] = { 0 };
   for (uint32_t i = 1; i <= 1000000; ++i) {
-    cout << "i = " << i << endl;
-    cout << res[i].chrom << " " << res[i].mismatch << endl;
+    cout << res[i].start_pos << " " << res[i].start_pos2 << " , "
+        << best_result[i].start_pos << " " << best_result[i].start_pos2
+        << endl;
     if (best_result[i].chrom == "XXX" && best_result[i].mismatch == 100) {
      // cout << "i2 = " << i << endl;
       if (res[i].chrom != "XXX") {
@@ -36,8 +40,11 @@ void CompareMappingResults(vector<CMAPPINGResult>& res,
     } else {
      // cout << "i2 = " << i << endl;
       //cout << "misamtch = " << best_result[i].mismatch << endl;
+      //if (best_result[i].chrom == res[i].chrom
+        //  && (best_result[i].start_pos + 1 == res[i].start_pos ||  best_result[i].start_pos + 2 == res[i].start_pos ||
+        //    best_result[i].start_pos + 1 == res[i].start_pos2 ||  best_result[i].start_pos + 2 == res[i].start_pos2)) {
       if (best_result[i].chrom == res[i].chrom
-          && best_result[i].start_pos + 1 == res[i].start_pos) {
+          && best_result[i].start_pos + 1 == res[i].start_pos){
         TP++;
         tp[best_result[i].mismatch]++;
       } else {
@@ -45,6 +52,7 @@ void CompareMappingResults(vector<CMAPPINGResult>& res,
         fn[best_result[i].mismatch]++;
       }
     }
+    fprintf(stderr, "TP: %d TN:%d FP:%d FN:%d\n", TP, TN, FP, FN);
   }
 
   fprintf(stderr, "TP: %d TN:%d FP:%d FN:%d\n", TP, TN, FP, FN);
@@ -96,7 +104,22 @@ int main(int argc, const char *argv[]) {
   cerr << "read mapping results..." << endl;
   vector<CMAPPINGResult> res(1000005);
   cerr << argv[3] << endl;
-  Read_SAM_Results(argv[3], res, argv[2]);
+  cout << "mapper: " << argv[2] << endl;
+  if (strcmp(argv[2], "batmeth") == 0 || strcmp(argv[2], "-batmeth") == 0) {
+    Read_BatMethResults(argv[3], res);
+  } else if (strcmp(argv[2], "bratsw") == 0
+      || strcmp(argv[2], "-bratsw") == 0) {
+    cout << "Read_BRATBWResults" << endl;
+    Read_BRATBWResults(argv[3], res);
+  } else {
+    Read_SAM_Results(argv[3], res, argv[2], false);
+  }
+
+  for (size_t i = 0; i < 1000005; ++i) {
+    cout << "read: " << i << " (" << res[i].chrom << " " << res[i].start_pos
+        << " " << res[i].mismatch << " " << ", " << res[i].start_pos2 << " "
+        << res[i].mismatch2 << ")" << endl;
+  }
 
   CompareMappingResults(res, best_result);
 

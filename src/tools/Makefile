@@ -22,6 +22,7 @@ PROGS = count-mismatch-for-mapped-reads \
 	meth_CpG_symmetric \
 	meth_comp_two_methylomes \
 	get-time-memory-from-qsub-output-file \
+	get-time-memory-from-qsub-output-file-pre \
 	get-time-memory-from-qsub-error-file \
 	generate-test-data 
 
@@ -83,6 +84,10 @@ get-nucleotide-from-chromosome-by-positoin : \
 
 
 get-time-memory-from-qsub-output-file : \
+	$(addprefix $(ACGTUN_UTIL)/, option.o) \
+	$(addprefix $(SMITHLAB_CPP)/, smithlab_os.o smithlab_utils.o)
+
+get-time-memory-from-qsub-output-file-pre : \
 	$(addprefix $(ACGTUN_UTIL)/, option.o) \
 	$(addprefix $(SMITHLAB_CPP)/, smithlab_os.o smithlab_utils.o)
 

@@ -32,7 +32,7 @@ int main(int argc, const char *argv[]) {
   cout << mapper << endl;
   cout << mapping_file << endl;
   cout << paired << endl;
-  Read_SAM_Results(mapping_file.c_str(), res, mapper);
+  Read_SAM_Results(mapping_file.c_str(), res, mapper, paired);
 
 
   map<uint32_t, uint32_t> mismatch_count;

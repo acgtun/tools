@@ -13,7 +13,7 @@
 using namespace std;
 
 struct QSUB_OUT {
-  QSUB_OUT(const uint32_t& _cputime, const uint32_t& _walttime,
+  QSUB_OUT(const double& _cputime, const double& _walttime,
            const double& _memory, const double& _vmem, const string& _file)
       : cputime(_cputime),
         walttime(_walttime),
@@ -30,8 +30,8 @@ struct QSUB_OUT {
          << "\t" << file << endl;
   }
 
-  uint32_t cputime;
-  uint32_t walttime;
+  double cputime;
+  double walttime;
   double memory;
   double vmem;
   string file;
@@ -76,10 +76,10 @@ int main(int argc, const char *argv[]) {
         break;
       uint32_t pos = line.find("cput");
       line = line.substr(pos);
-      int hour, min, sec, energy;
+      int hour, min, sec;
       long long mem, vmem;
-      sscanf(line.c_str(), "cput=%d:%d:%d,energy_used=%d,mem=%lldkb,vmem=%lld", &hour, &min,
-             &sec, &energy, &mem, &vmem);
+      sscanf(line.c_str(), "cput=%d:%d:%d,mem=%lldkb,vmem=%lld", &hour, &min,
+             &sec, &mem, &vmem);
       uint32_t num_of_seconds = 0;
       num_of_seconds = hour * 3600 + min * 60 + sec;
 
@@ -95,14 +95,9 @@ int main(int argc, const char *argv[]) {
       if (p != string::npos) {
         file_names[i] = file_names[i].substr(p + 1);
       }
-//      qsub_out.push_back(
-//          QSUB_OUT((double) num_of_seconds / 3600.00,
-//                   (double) num_of_seconds_wall / 3600.00,
-//                   (double) mem / (1024.00 * 1024.00),
-//                   (double) vmem / (1024.00 * 1024.00), file_names[i]));
       qsub_out.push_back(
-          QSUB_OUT(num_of_seconds,
-                    num_of_seconds_wall,
+          QSUB_OUT((double) num_of_seconds / 3600.00,
+                   (double) num_of_seconds_wall / 3600.00,
                    (double) mem / (1024.00 * 1024.00),
                    (double) vmem / (1024.00 * 1024.00), file_names[i]));
     }

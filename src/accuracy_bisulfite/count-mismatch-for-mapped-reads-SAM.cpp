@@ -25,7 +25,7 @@ int main(int argc, const char *argv[]) {
   Option::ChkStrExist("-paired", paired);
 
   vector<CMAPPINGResult> res(num_of_reads);
-  Read_SAM_Results(argv[2], res, argv[1]);
+  Read_SAM_Results(argv[2], res, argv[1], paired);
 
   map<int, int> count_mismatch;
   for (size_t i = 0; i < res.size(); ++i) {
